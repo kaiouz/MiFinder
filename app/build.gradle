@@ -1,0 +1,63 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion versions.compileSdk
+    defaultConfig {
+        applicationId "top.codemaster.mifinder"
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+
+    dataBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation deps.guava
+
+    implementation deps.dagger
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
+    annotationProcessor deps.daggerPro
+
+    implementation deps.rxjava
+    implementation deps.rxandroid
+    implementation deps.autodispose
+    implementation deps.autodisposeArch
+
+    implementation deps.picasso
+
+    implementation deps.gson
+
+    implementation deps.okhttp
+    implementation deps.retrofit
+    implementation deps.gsonRetrofit
+    implementation deps.rxjavaRetrofit
+
+    implementation deps.appcompat
+    implementation deps.constraintlayout
+    implementation deps.design
+    implementation deps.lifecycleExt
+
+    implementation 'com.shuyu:gsyVideoPlayer-java:6.0.3'
+    implementation 'com.shuyu:gsyVideoPlayer-ex_so:6.0.3'
+
+    testImplementation deps.junit
+    androidTestImplementation deps.runner
+    androidTestImplementation deps.espresso
+}

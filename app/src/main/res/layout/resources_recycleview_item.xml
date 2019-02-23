@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="resource"
+            type="top.codemaster.mifinder.data.Resource" />
+
+        <variable
+            name="clickListener"
+            type="android.view.View.OnClickListener"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="192dp"
+        android:onClick="@{clickListener}">
+
+        <ImageView
+            android:id="@+id/res_thum"
+            android:layout_width="@android:dimen/thumbnail_width"
+            android:layout_height="@android:dimen/thumbnail_height"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:imageUrl="@{resource.thumbnail}"
+            app:placeholder="@{@drawable/default_img}"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/res_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@{resource.name}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/res_thum"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="资源名称" />
+
+        <TextView
+            android:id="@+id/res_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/res_type_round_border"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/res_thum"
+            app:layout_constraintTop_toBottomOf="@+id/res_name"
+            app:resType="@{resource.resType}"
+            tools:text="视频" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
+
+
