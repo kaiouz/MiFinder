@@ -35,10 +35,10 @@ public class MainActivity extends AppCompatActivity implements ServiceDialog.Ser
         binding.viewpager.setAdapter(mAdapter);
         binding.tabLayout.setupWithViewPager(binding.viewpager);
 
-//        if (savedInstanceState == null) {
-//            startServiceDiscovery();
-//        }
-        updateUI("http://192.168.0.5:8080");
+        if (savedInstanceState == null) {
+            startServiceDiscovery();
+        }
+//        updateUI("http://192.168.0.6:8080");
     }
 
 

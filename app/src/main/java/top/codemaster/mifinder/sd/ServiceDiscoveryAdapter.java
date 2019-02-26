@@ -44,6 +44,7 @@ public class ServiceDiscoveryAdapter extends ListAdapter<ServiceHost, ServiceDis
 
         public VH(ContentDiscoveryListItemBinding binding) {
             super(binding.getRoot());
+            this.binding = binding;
         }
 
         void bind(View.OnClickListener clickListener, ServiceHost serviceHost) {

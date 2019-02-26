@@ -40,14 +40,23 @@ public class ServiceDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         DialogServiceDiscoveryBinding binding =
                 DialogServiceDiscoveryBinding.inflate(inflater, null, false);
-        ServiceDiscoveryAdapter adapter =  new ServiceDiscoveryAdapter(mListener);
+        ServiceDiscoveryAdapter adapter = new ServiceDiscoveryAdapter(mListener);
         binding.serviceList.setAdapter(adapter);
         builder.setView(binding.getRoot());
 
         NsdHelper.discover(getContext())
                 .observeOn(AndroidSchedulers.mainThread())
                 .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                .subscribe(adapter::submitList, e -> Log.e(TAG, e.getMessage(), e));
+                .subscribe(serviceHosts -> {
+                            if (serviceHosts.isEmpty()) {
+                                binding.setDiscovered(false);
+                            } else {
+                                binding.setDiscovered(true);
+                            }
+                            binding.executePendingBindings();
+                            adapter.submitList(serviceHosts);
+                        },
+                        e -> Log.e(TAG, e.getMessage(), e));
         return builder.create();
     }
 

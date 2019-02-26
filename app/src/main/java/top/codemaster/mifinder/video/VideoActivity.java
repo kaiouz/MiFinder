@@ -1,22 +1,29 @@
 package top.codemaster.mifinder.video;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 
-import com.shuyu.gsyvideoplayer.GSYBaseActivityDetail;
-import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder;
+import com.shuyu.gsyvideoplayer.GSYVideoManager;
+import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
+import androidx.appcompat.app.AppCompatActivity;
 import top.codemaster.mifinder.R;
 
-public class VideoActivity extends GSYBaseActivityDetail<StandardGSYVideoPlayer> {
+public class VideoActivity extends AppCompatActivity {
 
     public static final String EXTRA_KEY_URL = VideoActivity.class.getName() + ".EXTRA_KEY_URL";
 
-    StandardGSYVideoPlayer detailPlayer;
+    public static final String EXTRA_KEY_TITLE = VideoActivity.class.getName() + ".EXTRA_KEY_TITLE";
 
     private String url;
+
+    private String title;
+
+    StandardGSYVideoPlayer videoPlayer;
+
+    OrientationUtils orientationUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,51 +31,61 @@ public class VideoActivity extends GSYBaseActivityDetail<StandardGSYVideoPlayer>
         setContentView(R.layout.activity_video);
 
         url = getIntent().getStringExtra(EXTRA_KEY_URL);
+        title = getIntent().getStringExtra(EXTRA_KEY_TITLE);
 
-        detailPlayer = findViewById(R.id.detail_player);
+        init();
+    }
+
+    private void init() {
+        videoPlayer = findViewById(R.id.video_player);
+
+        videoPlayer.setUp(url, false, title);
+
         //增加title
-        detailPlayer.getTitleTextView().setVisibility(View.GONE);
-        detailPlayer.getBackButton().setVisibility(View.GONE);
+        videoPlayer.getTitleTextView().setVisibility(View.VISIBLE);
+        //设置返回键
+        videoPlayer.getBackButton().setVisibility(View.VISIBLE);
+        //设置旋转
+        orientationUtils = new OrientationUtils(this, videoPlayer);
+        //设置全屏按键功能,这是使用的是选择屏幕，而不是全屏
+        videoPlayer.getFullscreenButton().setOnClickListener(v -> videoPlayer.startWindowFullscreen(this, false, true));
+        //是否可以滑动调整
+        videoPlayer.setIsTouchWiget(true);
+        //设置返回按键功能
+        videoPlayer.getBackButton().setOnClickListener(v -> onBackPressed());
+        videoPlayer.startPlayLogic();
+    }
 
-        initVideoBuilderMode();
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        videoPlayer.onVideoPause();
     }
 
     @Override
-    public StandardGSYVideoPlayer getGSYVideoPlayer() {
-        return detailPlayer;
+    protected void onResume() {
+        super.onResume();
+        videoPlayer.onVideoResume();
     }
 
     @Override
-    public GSYVideoOptionBuilder getGSYVideoOptionBuilder() {
-        //内置封面可参考SampleCoverVideo
-        ImageView imageView = new ImageView(this);
-        //loadCover(imageView, url);
-        return new GSYVideoOptionBuilder()
-                .setThumbImageView(imageView)
-                .setUrl(url)
-                .setCacheWithPlay(true)
-                .setVideoTitle(" ")
-                .setIsTouchWiget(true)
-                .setRotateViewAuto(false)
-                .setLockLand(false)
-                .setShowFullAnimation(false)//打开动画
-                .setNeedLockFull(true)
-                .setSeekRatio(1);
+    protected void onDestroy() {
+        super.onDestroy();
+        GSYVideoManager.releaseAllVideos();
+        if (orientationUtils != null)
+            orientationUtils.releaseListener();
     }
 
     @Override
-    public void clickForFullScreen() {
-
+    public void onBackPressed() {
+        //先返回正常状态
+        if (orientationUtils.getScreenType() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            videoPlayer.getFullscreenButton().performClick();
+            return;
+        }
+        //释放所有
+        videoPlayer.setVideoAllCallBack(null);
+        super.onBackPressed();
     }
-
-
-    /**
-     * 是否启动旋转横屏，true表示启动
-     */
-    @Override
-    public boolean getDetailOrientationRotateAuto() {
-        return true;
-    }
-
 }

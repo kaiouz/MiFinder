@@ -24,8 +24,6 @@ public class NsdHelper {
 
     private Set<ServiceHost> serviceHosts = new HashSet<>();
 
-    private NsdManager.ResolveListener resolveListener;
-
     private NsdManager.DiscoveryListener discoveryListener;
 
     private NsdListener nsdListener;
@@ -66,7 +64,6 @@ public class NsdHelper {
         }
         started = true;
         this.nsdListener = listener;
-        resolveListener = new ResolveListener();
         discoveryListener = new DiscoverListener();
         nsdManager.discoverServices("_http._tcp.", NsdManager.PROTOCOL_DNS_SD, discoveryListener);
     }
@@ -74,7 +71,6 @@ public class NsdHelper {
     public void stopDiscover() {
         nsdManager.stopServiceDiscovery(discoveryListener);
         discoveryListener = null;
-        resolveListener = null;
     }
 
     private void addService(ServiceHost serviceHost) {
@@ -106,7 +102,7 @@ public class NsdHelper {
             Log.d(TAG, "Service discovery success" + service);
             if (service.getServiceName().contains("mifinder")) {
                 Log.d(TAG, "Service resolve started");
-                nsdManager.resolveService(service, resolveListener);
+                nsdManager.resolveService(service, new ResolveListener());
             }
         }
 
